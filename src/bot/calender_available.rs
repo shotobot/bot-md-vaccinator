@@ -1,8 +1,8 @@
+use std::time::Instant;
 use crate::bot::State;
 use crate::pause::{pause, Pause};
 use crate::endpoint::{get, Endpoint};
 use crate::alert::{alert, Alert};
-use crate::notify::{notify, Notify};
 
 use serde_json::Value;
 
@@ -17,8 +17,7 @@ pub fn run(id: u64) -> State {
                 },
                 Value::String(_) => {
                     log::info!("*** slots available ***");
-                    notify(Notify::BookingActivated);
-                    State::BookingPossible(id)
+                    State::BookingPossible(id, Instant::now(), false)
                 },
                 _ => {
                     log::info!("unexpected value found");

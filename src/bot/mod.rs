@@ -1,3 +1,5 @@
+use std::time::Instant;
+
 mod calender_listing;
 mod calender_available;
 mod calender_unavailable;
@@ -15,7 +17,7 @@ pub enum State {
     CalenderListing,
     CalenderAvailable(u64),
     CalenderUnavailable,
-    BookingPossible(u64)
+    BookingPossible(u64, Instant, bool)
 }
 
 fn run_state(state: State) -> State {
@@ -24,7 +26,7 @@ fn run_state(state: State) -> State {
         State::CalenderListing => calender_listing::run(),
         State::CalenderAvailable(id) => calender_available::run(id),
         State::CalenderUnavailable => calender_unavailable::run(),
-        State::BookingPossible(id) => booking_possible::run(id)
+        State::BookingPossible(id, open, notified) => booking_possible::run(id, open, notified)
     }
 }
 
