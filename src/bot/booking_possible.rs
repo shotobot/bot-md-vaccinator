@@ -13,7 +13,10 @@ pub fn run(id: u64, open: Instant, notified: bool) -> State {
             match json["Data"] {
                 Value::Null => {
                     log::info!("*** booking no longer possible ***");
-                    notify(Notify::BookingDeactivated);
+                    if notified {
+                        notify(Notify::BookingDeactivated);
+                        log::info!("notified subscribers about end of booking");
+                    }
                     State::CalenderListing
                 },
                 Value::String(_) => {
@@ -21,6 +24,7 @@ pub fn run(id: u64, open: Instant, notified: bool) -> State {
                     let shall_notifiy = Instant::now().duration_since(open).as_secs() > 120;
                     if shall_notifiy && !notified {
                         notify(Notify::BookingActivated);
+                        log::info!("notified subscribers about begin of booking");
                     }
                     pause(Pause::Short);
                     State::BookingPossible(id, open, shall_notifiy)
